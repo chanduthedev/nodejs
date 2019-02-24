@@ -47,13 +47,18 @@ var validate = function (request, response, next) {
 // If you dont need validation before uploading, you can remove validate method 
 app.post("/uploadfile", validate, upload.single("file"), function (request, response) {
   filename = request.file.originalname
-  input_file = "uploads/" + filename
-  response.writeHead(200);
-  response.write(JSON.stringify({
-    fileURL: request.file.originalname
-  }));
+  if(request.file) {
+    response.writeHead(200);
+    response.write(JSON.stringify({
+      fileURL: request.file.originalname
+    }));
+  } else {
+    response.writeHead(400);
+    response.write(JSON.stringify({
+      error: request.file.originalname+" file uploading failed!!!"
+    }));
+  }
   response.end();
-
 });
 
 // Downloading files
